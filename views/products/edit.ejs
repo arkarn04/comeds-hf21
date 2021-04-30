@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <h1>Update
+        <%= product.name %>
+    </h1>
+    <form action='/products/<%= product._id %>?_method=PUT' method='POST'>
+        <label for="name">Name</label>
+        <input type="text" name="name" id="name" value='<%= product.name %>'>
+        <br>
+        <label for="detail">Detail</label>
+        <input type="text" name="detail" id="detail" value='<%= product.detail %>' />
+        <br>
+        <label for="price">Price</label>
+        <input type="number" name="price" id="price" value='<%= product.price %>' />
+        <br>
+        <label for="qtyAvl"></label>
+        <input type="number" name="qtyAvl" class="qtyAvl" value='<%= product.qtyAvl %>' />
+        <br>
+        <label for="image"></label>
+        <input type="text" name="image" class="image" value='<%= product.image %>' />
+        <br>
+        <label for="category">Choose a category: </label>
+        <select name="category" id="category">
+            <% for(let category of categories){ %> 
+                <option value='<%= category %>' <%= product.category === category ? 'selected' : '' %>><%= category %></option>
+            <% } %> 
+                    <option value="medicine">Medicine</option>
+                    <option value="oxygen-cylinder">Oxygen Cylinder</option>
+                    <option value="equipments">Equipments</option>
+                </select>
+        <br>
+        <button>Submit</button>
+    </form>
+</body>
+
+</html>

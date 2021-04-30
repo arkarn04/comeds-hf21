@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <h2>
+        <%= foundProduct.name %>
+    </h2>
+    <img src="<%= foundProduct.image %>">
+    <p>Category:
+        <%= foundProduct.category %>
+    </p>
+    <h3>Rs.
+        <%= foundProduct.price %>
+    </h3>
+    <p>Quantity Availabe-
+        <%= foundProduct.qtyAvl %>
+    </p>
+    <a href='/products/<%= foundProduct._id %>/edit'><button>Edit Product</button></a>
+    <a href='/products'>Back to Products</a>
+    <a href="#">Add to cart</a>
+    <a href='#'>Buy Now</a>
+    <form action='/products/<%= foundProduct._id %>?_method=DELETE' method='POST'>
+        <button>Delete</button>
+    </form>
+</body>
+
+</html>

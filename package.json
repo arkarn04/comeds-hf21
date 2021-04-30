@@ -1,0 +1,32 @@
+{
+    "name": "comeds",
+    "version": "1.0.0",
+    "description": "An e-Commerce Website built to provide a common platform between the medicine, oxygen-cylinders and other medical equipments suppliers and the patients in need.",
+    "main": "server.js",
+    "dependencies": {
+        "body-parser": "^1.19.0",
+        "ejs": "^3.1.6",
+        "express": "^4.17.1",
+        "method-override": "^3.0.0",
+        "mongoose": "^5.12.6",
+        "path": "^0.12.7"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.7"
+    },
+    "scripts": {
+        "start": "nodemon index.js",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/arkarn04/comeds-hf21.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/arkarn04/comeds-hf21/issues"
+    },
+    "homepage": "https://github.com/arkarn04/comeds-hf21#readme"
+}
