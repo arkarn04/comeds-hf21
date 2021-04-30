@@ -20,6 +20,7 @@ mongoose.connect('mongodb+srv://userC01:Website123@comeds0.iglnm.mongodb.net/myF
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+app.use('/public', express.static(path.join(__dirname, 'public')))
 app.use(methodOverride('_method'));
 
 //parse application/x-www-form-urlencoded
