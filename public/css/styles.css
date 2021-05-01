@@ -8,3 +8,10 @@
     background-color: black;
     color: white;
 }
+
+footer{
+    color: white;
+    background-color: black;
+    margin: 1em;
+    padding: 1em;
+}

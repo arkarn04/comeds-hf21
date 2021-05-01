@@ -14,11 +14,67 @@
 </head>
 
 <body>
-    <form action='/user/logout' method='POST'>
-        <button>Logout</button>
-    </form>
-    <h1>All products here</h1>
+    <header>
+        <nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">CoMeds</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                        <div class="navbar-nav">
+                            <a class="nav-link" href="/products/new">Sell on CoMeds</a>
+                            <a class="nav-link" href="#abt">About Us</a>
+                            <a class="nav-link" href="/users/login">Login</a>
+                            <form action='/user/logout' method='POST'></form>
+                            <button type="button" class="btn btn-primary" id="signout"><svg
+                                    xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                                    class="bi bi-power" viewBox="0 0 16 16">
+                                    <path d="M7.5 1v7h1V1h-1z" />
+                                    <path
+                                        d="M3 8.812a4.999 4.999 0 0 1 2.578-4.375l-.485-.874A6 6 0 1 0 11 3.616l-.501.865A5 5 0 1 1 3 8.812z" />
+                                </svg> Signout</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+        </nav>
+    </header>
+    <div class="container">
+        <div class="row">
+            <div class="col"></div>
+            <div class="col-lg-6 col-md-6 col-sm-8 col-xs-10" style="margin-top: 8%;">
+                <div class="card">
+                    <h1 class="display-6" style="text-align: center;">All Products here</h1>
+                </div>
+                <% for(product of foundProducts){ %>
+                    <div class="card mt-5">
+                        <div class="card-body" style="text-align: center;">
+                            <a href='/products/<%= product._id %>'>
+                                <button class="btn btn-primary">
+                                    <h3>
+                                        <%= product.name %>
+                                    </h3>
+                                </button>
+                            </a>
+                            <h4>
+                                <%= product.category %>
+                            </h4>
+                            <p>
+                                <%= product.price %>
+                            </p>
+                        </div>
+                    </div>
+                    <% } %>
 
+            </div>
+            <div class="col"></div>
+        </div>
+    </div>
+    <!-- <h1>All products here</h1>
     <ul>
         <% for(product of foundProducts){ %>
             <li>
@@ -35,7 +91,19 @@
                 </p>
             </li>
             <% } %>
-    </ul>
+    </ul> -->
+
+    <footer id="abt">
+        We are students of IIT (ISM) Dhanbad, who love working with technology. As the second wave of covid hits our
+        country, many people are suffering from the shortage of oxygen cylinders and other covid curing medicines.
+        Our Web App aimes at providing quick and nearby solutions to those who are suffering. As we all know the changes
+        in the world occured during covid period are going to remain for a long haul. So, our Web App will be as useful
+        in the post coovid era, as it can be used as a connection between supplier and buyers of medical equipmnent. It
+        will remove the barrier of distance between the transacting parties. Itwill aslo help to bring the small scale
+        businesses to connect and develop on the internet.
+        <hr>
+        Contact Us: covidoxymedicals@gmail.com
+    </footer>
     <!-- JavaScript Bundle with Popper -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
