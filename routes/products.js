@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/product');
+const { isLoggedIn } = require('../middleware')
 
 const categories = ['medicine', 'oxygen-cylinder', 'equipments'];
 
@@ -12,13 +13,13 @@ router.get('/products', async(req, res) => {
 
 
 // Get a form to add new product
-router.get('/products/new', (req, res) => {
+router.get('/products/new', isLoggedIn, (req, res) => {
     res.render('products/new', { categories });
     //res.send(`form for new product`)
 })
 
 // CREATE new product
-router.post('/products', async(req, res) => {
+router.post('/products', isLoggedIn, async(req, res) => {
     const newProduct = new Product(req.body);
     await newProduct.save();
     res.redirect('/products');
@@ -31,20 +32,20 @@ router.get('/products/:id', async(req, res) => {
     res.render('products/show', { foundProduct });
 })
 
-router.get('/products/:id/edit', async(req, res) => {
+router.get('/products/:id/edit', isLoggedIn, async(req, res) => {
     const { id } = req.params;
     const product = await Product.findById(id);
     res.render('products/edit', { product, categories });
 })
 
-router.put('/products/:id', async(req, res) => {
+router.put('/products/:id', isLoggedIn, async(req, res) => {
     const { id } = req.params;
     const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
     res.redirect(`/products/${id}`);
 
 })
 
-router.delete('/products/:id', async(req, res) => {
+router.delete('/products/:id', isLoggedIn, async(req, res) => {
     const { id } = req.params;
     await Product.findByIdAndDelete(id);
     res.redirect('/products');
