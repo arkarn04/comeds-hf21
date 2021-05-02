@@ -13,6 +13,14 @@ const userSchema = new Schema({
     },
     dateOfBirth: {
         type: Date
+    },
+    isProducer: {
+        type: Boolean,
+        default: false
+    },
+    address: {
+        type: String,
+        default: ''
     }
 })
 

@@ -8,9 +8,11 @@ const session = require('express-session');
 const passport = require('passport');
 const flash = require('connect-flash');
 const LocalStrategy = require('passport-local');
+const twilio = require('twilio');
 const User = require('./models/user')
 
 const productRoutes = require('./routes/products')
+const producerRoutes = require('./routes/producer')
 const authRoutes = require('./routes/auth');
 
 // Database Config
@@ -22,6 +24,12 @@ mongoose.connect('mongodb+srv://userC01:Website123@comeds0.iglnm.mongodb.net/myF
         console.log(`Database Error!!!`);
         console.log(err);
     })
+
+const accountSid = 'AC68ec3537a966821af42b2faa906c17f0';
+const authToken = 'a0ddcaaf9d152560f539fdb5056bb444';
+const client = require('twilio')(accountSid, authToken);
+
+
 
 
 app.set('view engine', 'ejs');
@@ -45,6 +53,7 @@ app.use(session(sessionConfig));
 app.use(flash());
 
 app.use((req, res, next) => {
+    res.locals.currentUser = req.user
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
@@ -60,7 +69,8 @@ passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
 app.use('/user', authRoutes);
-app.use('/', productRoutes);
+app.use('/products', productRoutes);
+app.use('/producer', producerRoutes);
 
 app.get('/', (req, res) => {
     res.send("Hi there!!!")

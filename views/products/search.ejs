@@ -1,0 +1,21 @@
+<%- include('../partials/header') %>
+    <div class="container">
+        <h3> Search by city and category</h3>
+        <div class="container">
+            <h3>Search by city and product name</h3>
+            <form action='/search' method='POST'>
+                <div class="mb-3">
+                    <input type='text' name="cityOfPresence" id="cityOfPresence" placeholder="City">
+                </div>
+                <div class="mb-3">
+                    <select name="category" id="category">
+                        <option value='medicine'>Medicine</option>
+                        <option value='oxygen-cylinder'>Oxygen Cylinder</option>
+                        <option value='equipments'>Equipments</option>
+                    </select>
+                </div>
+                <button>Search</button>
+            </form>
+        </div>
+    </div>
+    <%- include('../partials/footer') %>
