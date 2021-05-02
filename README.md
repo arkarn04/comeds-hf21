@@ -40,7 +40,7 @@ Your machine should have Npm( or Yarn ) and Node.js installed to use it locally.
 
     To add upstream to remote, run: 
 
-     `git remote add upstream https://github.comn/arkarn04/comeds-hf21.git`
+     `git remote add upstream https://github.com/arkarn04/comeds-hf21.git`
 
     Again run `git remote -v`, the rrsponse should look like: 
 

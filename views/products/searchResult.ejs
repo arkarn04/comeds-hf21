@@ -17,11 +17,14 @@
                                 </button>
                             </a>
                             <h4>
+                                Category:
                                 <%= product.category %>
                             </h4>
                             <p>
+                                Rs.
                                 <%= product.price %>
                             </p>
+                            <a href='/products/<%= product._id %>/buy'><button class="btn btn-success">Buy Now</button></a>
                         </div>
                     </div>
                     <% } %>

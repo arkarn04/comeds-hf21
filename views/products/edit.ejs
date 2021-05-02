@@ -15,28 +15,28 @@
                     <div class="card-body">
                         <form action='/products/<%= product._id %>?_method=PUT' method='POST'>
                             <div class="mb-3">
-                                <label for="name" style="color:white">Name</label>
+                                <label for="name" class="form-label" style="color:white">Name</label>
 
-                                <input type="text" name="name" id="name" style="width: 500px;" value='<%= product.name %>'>
+                                <input type="text" class="form-control" name="name" id="name" style="width: 500px;" value='<%= product.name %>'>
                             </div>
                             <div class="mb-3">
-                                <label for="detail" style="color:white">Detail</label>
-                                <input type="text" name="detail" style="width: 500px;" id="detail" value='<%= product.detail %>' />
+                                <label for="detail" class="form-label" style="color:white">Detail</label>
+                                <input type="text" class="form-control" name="detail" style="width: 500px;" id="detail" value='<%= product.detail %>' />
                             </div>
                             <div class="mb-3">
-                                <label for="price" style="color:white">Price</label>
-                                <input type="number" style="width: 500px;" name="price" id="price" value='<%= product.price %>' />
+                                <label for="price" class="form-label" style="color:white">Price</label>
+                                <input type="number" class="form-control" style="width: 500px;" name="price" id="price" value='<%= product.price %>' />
                             </div>
                             <div class="mb-3">
-                                <label for="qtyAvl" style="color:white">Quantity</label>
-                                <input type="number" style="width: 500px;" name="qtyAvl" class="qtyAvl" value='<%= product.qtyAvl %>' />
+                                <label for="qtyAvl" class="form-label" style="color:white">Quantity</label>
+                                <input type="number" class="form-control" style="width: 500px;" name="qtyAvl" class="qtyAvl" value='<%= product.qtyAvl %>' />
                             </div>
                             <div class="mb-3">
-                                <label for="image" style="color:white">Image</label><br>
-                                <input type="text" style="width: 500px;" name="image" class="image" value='<%= product.image %>' />
+                                <label for="image" class="form-label" style="color:white">Image</label><br>
+                                <input type="text" class="form-control" style="width: 500px;" name="image" class="image" value='<%= product.image %>' />
                             </div>
                             <div class="mb-3">
-                                <label for="category" style="color:white">Choose a category: </label>
+                                <label for="category" class="form-label" style="color:white">Choose a category: </label>
                                 <select name="category" id="category">
                                     <% for(let category of categories){ %>
                                         <option value='<%= category %>' <%=product.category===category ? 'selected' : ''
