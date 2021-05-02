@@ -18,7 +18,7 @@ const producerRoutes = require('./routes/producer')
 const authRoutes = require('./routes/auth');
 
 // Database Config
-mongoose.connect(process.enc.DATABASE, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.DATABASE, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log(`MongoDB Connected`)
     })
