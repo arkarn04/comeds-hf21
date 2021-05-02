@@ -13,6 +13,9 @@
                 </div>
                 <div class="card">
                     <div class="card-body">
+                        <p>
+                            <%= foundProduct.detail %>
+                        </p>
                         <p>Category:
                             <%= foundProduct.category %>
                         </p>
@@ -25,9 +28,9 @@
 
                         <!-- <a href='/products/<%= foundProduct._id %>/edit'><button class="btn btn-primary">Edit
                                     Product</button></a>
-                            <form action='/products/<%= foundProduct._id %>?_method=DELETE' method='POST'>
-                                <button class="btn btn-danger">Delete</button>
-                            </form> -->
+                        <form action='/products/<%= foundProduct._id %>?_method=DELETE' method='POST'>
+                            <button class="btn btn-danger">Delete</button>
+                        </form> -->
 
 
 
