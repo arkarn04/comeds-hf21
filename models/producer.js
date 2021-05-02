@@ -28,3 +28,7 @@ const producerSchema = new Schema({
         ref: 'Product'
     }]
 })
+
+const Producer = mongoose.model('Producer', producerSchema)
+
+module.exports = Producer
