@@ -26,7 +26,7 @@ router.get('/', async(req, res) => {
 
 router.get('/search/:cityOfPresence/:category', async(req, res) => {
     const { cityOfPresence, category } = req.params;
-    const foundProducts = await Product.find({ cityOfPresence: cityOfPresence });
+    const foundProducts = await Product.find({ cityOfPresence: cityOfPresence, category });
     console.log(foundProducts)
     res.render('products/searchResult', { foundProducts })
 })
