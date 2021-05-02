@@ -16,20 +16,24 @@ router.get('/register', (req, res) => {
     res.render('auth/register');
 })
 
-router.post('/register', async(req, res) => {
+router.post('/register', async(req, res, next) => {
     const { username, email, dateOfBirth, password } = req.body;
     const user = new User({ username, email, dateOfBirth });
     const registeredUser = await User.register(user, password);
-    // const hash = await bcrypt.hash(password, 12);
-    // const user = new User({
-    //     name,
-    //     email,
-    //     dateOfBirth,
-    //     password: hash
-    // })
-    // await user.save();
-    // req.session.user_id = user._id;
-    res.redirect('/products');
+    req.login(registeredUser, err => {
+            if (err) return next(err)
+            res.redirect('/products');
+        })
+        // const hash = await bcrypt.hash(password, 12);
+        // const user = new User({
+        //     name,
+        //     email,
+        //     dateOfBirth,
+        //     password: hash
+        // })
+        // await user.save();
+        // req.session.user_id = user._id;
+
 })
 
 router.get('/login', (req, res) => {
@@ -37,11 +41,14 @@ router.get('/login', (req, res) => {
 })
 
 router.post('/login', passport.authenticate('local', {
-    successRedirect: '/products',
+    // successRedirect: '/products',
     faliureRedirect: '/user/login'
 }), (req, res) => {
     // req.flash('success', 'Welcome!!!')
-    // res.redirect('/products')
+    const redirectUrl = req.session.returnTo || '/products'
+    delete req.session.returnTo;
+    res.redirect(redirectUrl);
+
 })
 
 // router.post('/login', async(req, res) => {

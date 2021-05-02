@@ -30,6 +30,15 @@ const productSchema = new Schema({
         type: String,
         enum: ['medicine', 'oxygen-cylinder', 'equipments'],
         default: 'medicine'
+    },
+    cityOfPresence: {
+        type: String,
+        required: true,
+        default: ''
+    },
+    owner: {
+        type: Schema.Types.ObjectId,
+        ref: 'Producer'
     }
 })
 

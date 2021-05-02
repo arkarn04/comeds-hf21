@@ -11,9 +11,8 @@ const producerSchema = new Schema({
     phone: {
         type: Number
     },
-    gender: {
-        type: String,
-        enum: ['Male', 'Female', 'Other']
+    dateOfBirth: {
+        type: Date
     },
     storeName: {
         type: String
@@ -21,6 +20,11 @@ const producerSchema = new Schema({
     storeStreet: String,
     storeCity: String,
     storeState: String,
-    storeCountry: String,
-    storeAddress:
+    storePIN: {
+        type: String
+    },
+    products: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Product'
+    }]
 })

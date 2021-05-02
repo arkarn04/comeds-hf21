@@ -1,0 +1,21 @@
+<%- include('../partials/header') %>
+
+    <div class="container">
+        <h2>Provide your details: </h2>
+        <form action='/products/<%= foundProduct._id %>/buy' method="POST">
+            <div class="mb-3">
+                <label for="username">Your Name: </label>
+                <input type="text" name="username" id="username" placeholder="Name">
+            </div>
+            <div class="mb-3">
+                <label for="address">Your shipping adress: </label>
+                <input type="text" name="address" id="address" placeholder="Shipping Address">
+            </div>
+            <p>Only Cash on Delivery option Available for now!!!</p>
+            <button>Order</button>
+        </form>
+    </div>
+
+
+
+    <%- include('../partials/footer') %>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <h3>To sell your product, register yourself as a seller.</h3>
+    <form action='/producer/new' method="POST">
+        <div>
+            <label for="name">Enter your name: </label>
+            <input type="text" name="name" id="name" placeholder='Your name'>
+        </div>
+        <div>
+            <label for="email">Enter your email: </label>
+            <input type="email" name="email" id="email" placeholder="email">
+        </div>
+        <div>
+            <label for="phone">Enter contact number: </label>
+            <input type="tel" name="phone" id="phone" placeholder="Your contact number here">
+        </div>
+        <div>
+            <label for="dateOfBirth">Date of Birth: </label>
+            <input type="date" name="dateOfBirth" id="dateOfBiirth">
+        </div>
+        <div>
+            <label for="storeName">Enter your store/shop name: </label>
+            <input type="text" name="storeName" id="storeName" placeholder="Store/Shop name">
+        </div>
+        <div>
+            <label for="storeStreet">Enter street where your shop is present:</label>
+            <input type="text" name="storeStreet" id="storeStreet" placeholder="Street">
+        </div>
+        <div>
+            <label for="storeCity">City</label>
+            <input type="text" name="storeCity" id="storeCity" placeholder="City">
+        </div>
+        <div>
+            <label for="storeState">State</label>
+            <input type="text" name="storeState" id="storeState" placeholder="State">
+        </div>
+        <div>
+            <label for="storePIN">PIN</label>
+            <input type="text" name="storePIN" id="storePIN" placeholder="PIN">
+        </div>
+        <button>Become a seller</button>
+    </form>
+</body>
+
+</html>
