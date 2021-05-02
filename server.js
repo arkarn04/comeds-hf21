@@ -1,5 +1,4 @@
 const express = require('express');
-const app = express();
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
@@ -9,14 +8,17 @@ const passport = require('passport');
 const flash = require('connect-flash');
 const LocalStrategy = require('passport-local');
 const twilio = require('twilio');
+const dotenv = require('dotenv');
 const User = require('./models/user')
+const app = express();
+dotenv.config();
 
 const productRoutes = require('./routes/products')
 const producerRoutes = require('./routes/producer')
 const authRoutes = require('./routes/auth');
 
 // Database Config
-mongoose.connect('mongodb+srv://userC01:Website123@comeds0.iglnm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority', { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.enc.DATABASE, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log(`MongoDB Connected`)
     })
@@ -25,8 +27,8 @@ mongoose.connect('mongodb+srv://userC01:Website123@comeds0.iglnm.mongodb.net/myF
         console.log(err);
     })
 
-const accountSid = 'AC68ec3537a966821af42b2faa906c17f0';
-const authToken = 'a0ddcaaf9d152560f539fdb5056bb444';
+const accountSid = process.env.TWILIO_ACCOUNTSID;
+const authToken = process.env.TWILIO_AUTHTOKEN;
 const client = require('twilio')(accountSid, authToken);
 
 
