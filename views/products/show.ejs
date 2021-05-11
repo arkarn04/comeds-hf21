@@ -9,7 +9,10 @@
                     </h1>
                 </div>
                 <div class="card">
-                    <img src="<%= foundProduct.image %>">
+                    <% for(let img of foundProduct.images) { %>
+                        <img src="<%= img.url %>">
+                        <% } %>
+
                 </div>
                 <div class="card">
                     <div class="card-body">

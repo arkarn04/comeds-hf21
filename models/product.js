@@ -22,10 +22,10 @@ const productSchema = new Schema({
         default: 0,
         required: true
     },
-    image: {
-        type: String,
-        required: true
-    },
+    images: [{
+        url: String,
+        filename: String
+    }],
     category: {
         type: String,
         enum: ['medicine', 'oxygen-cylinder', 'equipments'],

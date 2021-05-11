@@ -9,7 +9,7 @@
                 </div>
                 <div class="card mt-5">
                     <div class="card-body">
-                        <form action="/products" method="POST" id="form">
+                        <form action="/products" method="POST" id="form" enctype="multipart/form-data">
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" class="form-control" id="name" aria-describedby="emailHelp" placeholder="Product Name" name="name">
@@ -27,12 +27,17 @@
                                 <input type="number" class="form-control" name="qtyAvl" aria-describedby="emailHelp" id="qtyAvl" placeholder="Quantity" />
                             </div>
                             <div class="mb-3">
-                                <label for="image" class="form-label">Image</label>
-                                <input type="text" class="form-control" id="image" aria-describedby="emailHelp" placeholder="Image link" name="image">
+                                <label for="image" class="form-label">Upload Product Images</label>
+                                <div class="form-file custom-file">
+                                    <input type="file" class="form-file-input" name="image" id="image" multiple>
+                                    <label for="image" class="form-file-label">
+                                        <span class="form-file-button">Browse</span>
+                                    </label>
+                                </div>
                             </div>
                             <div class="mb-3">
                                 <label for="category" class="form-label">Choose a category: </label>
-                                <select name="category" id="category">
+                                <select name="category" id="category" class="form-control">
                                     <% for(let category of categories){ %>
                                         <option value='<%= category %>'>
                                             <%= category %>

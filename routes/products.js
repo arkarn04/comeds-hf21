@@ -2,6 +2,9 @@ const express = require('express');
 const router = express.Router();
 const Product = require('../models/product');
 const twilio = require('twilio');
+const multer = require('multer');
+const { storage, cloudinary } = require('../cloudinary/index');
+const upload = multer({ storage });
 const { isLoggedIn } = require('../middleware')
 
 const accountSid = 'AC68ec3537a966821af42b2faa906c17f0';
@@ -49,9 +52,12 @@ router.get('/new', isLoggedIn, (req, res) => {
 })
 
 // CREATE new product
-router.post('/', isLoggedIn, async(req, res) => {
+router.post('/', isLoggedIn, upload.array('image'), async(req, res) => {
     const newProduct = new Product(req.body);
-    console.log(req.body)
+    newProduct.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    //console.log(req.body, req.files)
+    //res.send('Done');
+    console.log(newProduct);
     await newProduct.save();
     res.redirect('/products');
 })
@@ -72,9 +78,26 @@ router.get('/:id/edit', isLoggedIn, async(req, res) => {
     res.render('products/edit', { product, categories });
 })
 
-router.put('/:id', isLoggedIn, async(req, res) => {
+router.put('/:id', isLoggedIn, upload.array('image'), async(req, res) => {
     const { id } = req.params;
+    //console.log(req.body);
     const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
+    const imgs = req.files.map(f => ({ url: f.path, filename: f.filename }));
+    product.images.push(...imgs);
+    // if (req.body.deleteImages) {
+    //     for (let filename of req.body.deleteImages) {
+    //         await cloudinary.uploader.destroy(filename);
+    //     }
+    //     try {
+    //         const delImg = await Product.findByIdAndUpdate(id, { $pull: { images: { filename: { $in: req.body.deleteImages } } } });
+    //         console.log(product);
+    //         console.log(`Del Img: ${delImg.upsertedId}`)
+    //     } catch (err) {
+    //         console.log(err);
+    //         console.log('deletion failed!!!');
+    //     }
+    // }
+    await product.save();
     res.redirect(`/products/${id}`);
 
 })
