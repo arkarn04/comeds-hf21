@@ -21,7 +21,19 @@ const userSchema = new Schema({
     address: {
         type: String,
         default: ''
+    },
+    boughtProducts: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Product'
+        }
+    ],
+    createdProducts: [
+    {
+        type: Schema.Types.ObjectId,
+        ref: 'User'
     }
+    ]
 })
 
 userSchema.plugin(passportLocalMongoose);
