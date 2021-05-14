@@ -17,11 +17,10 @@ const User = require('./models/user')
 const app = express();
 
 const productRoutes = require('./routes/products')
-const producerRoutes = require('./routes/producer')
 const authRoutes = require('./routes/auth');
 
 // Database Config
-mongoose.connect(process.env.DATABASE, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.DATABASE_URI, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => {
         console.log(`MongoDB Connected`)
     })
@@ -75,7 +74,6 @@ passport.deserializeUser(User.deserializeUser());
 
 app.use('/user', authRoutes);
 app.use('/products', productRoutes);
-app.use('/producer', producerRoutes);
 
 app.get('/', (req, res) => {
     res.send("Hi there!!!")

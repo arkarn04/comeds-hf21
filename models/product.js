@@ -38,7 +38,7 @@ const productSchema = new Schema({
     },
     owner: {
         type: Schema.Types.ObjectId,
-        ref: 'Producer'
+        ref: 'User'
     }
 })
 
