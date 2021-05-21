@@ -22,7 +22,7 @@ router.get('/', async(req, res) => {
     //     res.render('products/index', { foundProducts: foundSortedProducts })
     // } else {
     const foundProducts = await Product.find({})
-    console.log(foundProducts)
+    //console.log(foundProducts)
     res.render('products/index', { foundProducts })
         //}
 })
@@ -30,7 +30,7 @@ router.get('/', async(req, res) => {
 router.get('/search/:cityOfPresence/:category', async(req, res) => {
     const { cityOfPresence, category } = req.params;
     const foundProducts = await Product.find({ cityOfPresence: cityOfPresence, category });
-    console.log(foundProducts)
+    //console.log(foundProducts)
     res.render('products/searchResult', { foundProducts })
 })
 
@@ -40,7 +40,7 @@ router.get('/search', (req, res) => {
 
 router.post('/search', (req, res) => {
     const { cityOfPresence, category } = req.body;
-    console.log(req.body)
+    //console.log(req.body)
     res.redirect(`/products/search/${cityOfPresence}/${category}`);
 })
 
@@ -57,7 +57,8 @@ router.post('/', isLoggedIn, upload.array('image'), async(req, res) => {
     newProduct.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     //console.log(req.body, req.files)
     //res.send('Done');
-    console.log(newProduct);
+    // console.log(newProduct);
+    console.log(req.user);
     await newProduct.save();
     res.redirect('/products');
 })
