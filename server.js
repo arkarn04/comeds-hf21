@@ -7,7 +7,6 @@ const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
 const methodOverride = require('method-override');
-const session = require('express-session');
 const passport = require('passport');
 const flash = require('connect-flash');
 const LocalStrategy = require('passport-local');
@@ -32,28 +31,39 @@ mongoose.connect(process.env.DATABASE_URI, { useNewUrlParser: true, useUnifiedTo
 const accountSid = process.env.TWILIO_ACCOUNTSID;
 const authToken = process.env.TWILIO_AUTHTOKEN;
 const client = require('twilio')(accountSid, authToken);
-
-
-
+//parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(methodOverride('_method'));
+app.use(flash());
+app.use('/public', express.static(path.join(__dirname, 'public')))
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
-//parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use('/public', express.static(path.join(__dirname, 'public')))
-app.use(methodOverride('_method'));
-const sessionConfig = ({
-    secret: 'thiscouldbeabetteersecret',
+
+// const sessionConfig = ({
+//     secret: 'thiscouldbeabetteersecret',
+//     resave: false,
+//     saveUninitialized: true,
+//     cookie: {
+//         httpOnly: true,
+//         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
+//         maxAge: 1000 * 60 * 60 * 24 * 7
+//     }
+// })
+// app.use(session(sessionConfig));
+
+app.use(require('express-session')({
+    secret : "thiscouldabettersecret",
     resave: false,
-    saveUninitialized: true,
-    cookie: {
-        httpOnly: true,
-        expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
-        maxAge: 1000 * 60 * 60 * 24 * 7
-    }
-})
-app.use(session(sessionConfig));
-app.use(flash());
+    saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 
 app.use((req, res, next) => {
     res.locals.currentUser = req.user
@@ -63,13 +73,6 @@ app.use((req, res, next) => {
 })
 
 
-
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
 
 app.use('/user', authRoutes);
 app.use('/products', productRoutes);
