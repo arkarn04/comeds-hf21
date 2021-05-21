@@ -11,10 +11,13 @@ const userSchema = new Schema({
         required: true,
         unique: true
     },
+    phone: {
+        type: String
+    },
     dateOfBirth: {
         type: Date
     },
-    isProducer: {
+    isSeller: {
         type: Boolean,
         default: false
     },

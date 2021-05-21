@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CoMeds-Verify</title>
+ </head>
+ <body>
+ </body>
+</html>
+</head>
+<body>
+    <div class="container">
+        <div>
+            <h2> We sent a 6-digit code on your mobile number. Enter to verify!!!.</h2>
+        </div>
+        <div>
+            <form action="/user/mobileverifyS2" method="POST">
+                <div>
+                    <label for="phone">Enter your phone number: </label>
+                    <input type="text" name="ccode" id="ccode" placeholder="+91" />
+                    <input type="tel" name="phone" id="phone" placeholder="9876543210" />
+                </div>
+                <div>
+                    <label for="otp">Enter the 6-digit code you received: </label>
+                    <input type="number" name="otp" id="otp" />
+
+                </div>
+                <div>
+                    <button type="submit">Verify!!!</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

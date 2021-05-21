@@ -5,6 +5,8 @@ const passport = require('passport');
 const session = require('express-session')
 const User = require('../models/user');
 
+const client = require('twilio')(process.env.VERIFY_ACCOUNTSID, process.env.VERIFY_AUTHTOKEN);
+
 const isUserLoggedin = () => {
     if (!req.session.user_id) {
         return res.redirect('/user/login')
@@ -62,6 +64,52 @@ router.post('/login', passport.authenticate('local', {
 //         res.redirect('/user/login')
 //     }
 // })
+
+router.get('/mobileverifyS1', ( req, res ) => {
+    res.render('auth/mobileenter');
+})
+
+router.post('/mobileverifyS1', async (req, res) => {
+    console.log(req.body)
+    const phone = req.body.ccode + req.body.phone;
+
+    const data = await client
+        .verify
+        .services(process.env.VERIFY_SERVICEID)
+        .verifications
+        .create({
+            to: phone,
+            channel: 'sms'
+        })
+        
+    res.redirect('/user/mobileverifyS2');    
+    //res.send(`Form submitted`);
+})
+
+router.get('/mobileverifyS2', (req, res) => {
+    res.render('auth/codeenter');
+})
+
+router.post('/mobileverifyS2', async (req, res) => {
+    console.log(req.body)
+    const phone = req.body.ccode + req.body.phone;
+    const code = req.body.otp;
+    const data = await client
+        .verify
+        .services(process.env.VERIFY_SERVICEID)
+        .verificationChecks
+        .create({
+            to: phone,
+            code: code
+        })
+    // const curUser = req.user;
+    // const seller = await User.findById(curUser._id);
+    // seller.isSeller=true;
+    // seller.phone = phone;
+    // await seller.save();
+    // console.log(seller);   
+    res.send('Verified!!!') 
+})
 
 router.get('/logout', (req, res) => {
     req.logout();
