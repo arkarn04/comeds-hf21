@@ -53,7 +53,7 @@ app.set('views', path.join(__dirname, 'views'));
 // app.use(session(sessionConfig));
 
 app.use(require('express-session')({
-    secret : "thiscouldabettersecret",
+    secret: "thiscouldabettersecret",
     resave: false,
     saveUninitialized: false
 }));

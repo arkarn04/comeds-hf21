@@ -1,18 +1,36 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CoMeds-Verify</title>
- </head>
- <body>
- </body>
-</html>
-</head>
-<body>
+<%- include('../partials/header') %>
     <div class="container">
-        <div>
+        <div class="row">
+            <div class="col-lg-8 col-md-6 col-sm-8 col-xs-10 offset-2">
+                <div class="card mt-5">
+                    <h1 class="display-6" style="text-align: center;">We sent a 6-digit code on your mobile number.
+                        Enter to verify!!!</h1>
+                </div>
+                <div class="card mt-5">
+                    <div class="card-body">
+                        <form action="/user/mobileverifyS2" method="POST">
+                            <div>
+                                <div class="mb-3">
+                                    <label class="form-label" for="phone">Enter your phone number: </label>
+                                    <input class="form-control" type="text" name="ccode" id="ccode" placeholder="+91" />
+                                </div>
+                                <div class="mb-3">
+                                    <input class="form-control" type="tel" name="phone" id="phone"
+                                        placeholder="98765xxxxx" />
+                                </div>
+                            </div>
+                            <div>
+                                <label class="form-label" for="otp">Enter the 6-digit code you received: </label>
+                                <input class="form-control" type="number" name="otp" id="otp" />
+                            </div>
+                            <div>
+                                <button type="submit" class="btn btn-info">Verify!!!</button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- <div>
             <h2> We sent a 6-digit code on your mobile number. Enter to verify!!!.</h2>
         </div>
         <div>
@@ -31,7 +49,6 @@
                     <button type="submit">Verify!!!</button>
                 </div>
             </form>
-        </div>
+        </div> -->
     </div>
-</body>
-</html>
+    <%- include('../partials/footer') %>
