@@ -1,3 +1,5 @@
+const PORT = process.env.PORT || 5000;
+
 if (process.env.NODE_ENV !== "production") {
     require('dotenv').config();
 }
@@ -81,7 +83,7 @@ app.get('/', (req, res) => {
     res.send("Hi there!!!")
 })
 
-const PORT = 3000;
+
 app.listen(PORT, () => {
     console.log(`Server running on PORT ${PORT}`);
 })
