@@ -7,8 +7,8 @@ const { storage, cloudinary } = require('../cloudinary/index');
 const upload = multer({ storage });
 const { isLoggedIn } = require('../middleware')
 
-const accountSid = 'AC68ec3537a966821af42b2faa906c17f0';
-const authToken = 'a0ddcaaf9d152560f539fdb5056bb444';
+const accountSid = process.env.TWILIO_ACCOUNTSID;
+const authToken = process.env.TWILIO_AUTHTOKEN;
 const client = require('twilio')(accountSid, authToken);
 
 const categories = ['medicine', 'oxygen-cylinder', 'equipments'];
@@ -21,7 +21,7 @@ router.get('/', async(req, res) => {
     //     const foundSortedProducts = await Product.find({ city: queryCity, category: queryCat });
     //     res.render('products/index', { foundProducts: foundSortedProducts })
     // } else {
-    const foundProducts = await Product.find({})
+    const foundProducts = await (await Product.find({})).filter(prod => prod.qtyAvl>0);
     //console.log(foundProducts)
     res.render('products/index', { foundProducts })
         //}
@@ -119,7 +119,7 @@ router.post('/:id/buy', async(req, res) => {
     const { username, address } = req.body;
     const { id } = req.params;
     const foundProduct = await Product.findById(id);
-    if (foundProduct.qtyAvl > 0) {
+    if (foundProduct.qtyAvl > 1) {
         foundProduct.qtyAvl--;
         await foundProduct.save();
 
@@ -129,17 +129,28 @@ router.post('/:id/buy', async(req, res) => {
                 from: '+18173857837',
                 to: '+919304257915'
             })
-            .then(message => console.log(message.sid));
-        res.redirect('/products')
+            .then(message => {
+                console.log(message.sid);
+                res.redirect('/products');
+            })
+            .catch(err => console.log("UNSUCCESSFUL PURCHASE", err));
     } else {
+        foundProduct.qtyAvl--;
+        await foundProduct.save();
         client.messages
             .create({
                 body: `Dear seller, the amount of ${foundProduct.name} available for selling on CoMeds.com has reduced to zero, Kindly take necessary actions.`,
                 from: '+18173857837',
                 to: '+919304257915'
             })
-            .then(message => console.log(message.sid));
-        res.redirect('/products')
+            .then(message => {
+                console.log(message.sid);
+                res.redirect('/products');
+            })
+            .catch(err => {
+                console.log("PRODUCT NOT AVAILABLE",err);
+            })
+        
     }
 
 })
