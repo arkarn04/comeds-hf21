@@ -70,7 +70,8 @@ router.get('/mobileverifyS1', ( req, res ) => {
 })
 
 router.post('/mobileverifyS1', async (req, res) => {
-    console.log(req.body)
+    console.log(req.body);
+    console.log(`${req.user} in /mobileverifyS1 page!!!`);
     const phone = req.body.ccode + req.body.phone;
 
     const data = await client
@@ -81,8 +82,9 @@ router.post('/mobileverifyS1', async (req, res) => {
             to: phone,
             channel: 'sms'
         })
-        
-    res.redirect('/user/mobileverifyS2');    
+     
+    res.render('auth/codeenter', { phone })
+    //res.redirect('/user/mobileverifyS2');    
     //res.send(`Form submitted`);
 })
 
@@ -91,24 +93,30 @@ router.get('/mobileverifyS2', (req, res) => {
 })
 
 router.post('/mobileverifyS2', async (req, res) => {
-    console.log(req.body)
-    const phone = req.body.ccode + req.body.phone;
-    const code = req.body.otp;
-    const data = await client
-        .verify
-        .services(process.env.VERIFY_SERVICEID)
-        .verificationChecks
-        .create({
-            to: phone,
-            code: code
-        })
-    // const curUser = req.user;
-    // const seller = await User.findById(curUser._id);
-    // seller.isSeller=true;
-    // seller.phone = phone;
-    // await seller.save();
-    // console.log(seller);   
-    res.send('Verified!!!') 
+    console.log(req.body);
+    try {
+        const phone = req.body.ccode + req.body.phone;
+        const code = req.body.otp;
+        const data = await client
+            .verify
+            .services(process.env.VERIFY_SERVICEID)
+            .verificationChecks
+            .create({
+                to: phone,
+                code: code
+            })
+        const curUser = req.user;
+        console.log(curUser);
+        // const seller = await User.findById(curUser._id);
+        // seller.isSeller=true;
+        // seller.phone = phone;
+        // await seller.save();
+        // console.log(seller);   
+        res.send('Verified!!!') 
+    }
+    catch(err) {
+        console.log(err);
+    }
 })
 
 router.get('/logout', (req, res) => {

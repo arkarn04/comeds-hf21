@@ -31,6 +31,7 @@ router.get('/search/:cityOfPresence/:category', async(req, res) => {
     const { cityOfPresence, category } = req.params;
     const foundProducts = await Product.find({ cityOfPresence: cityOfPresence, category });
     //console.log(foundProducts)
+    console.log(`${req.user} in search results page!!!`);
     res.render('products/searchResult', { foundProducts })
 })
 
@@ -70,6 +71,7 @@ router.get('/:id', async(req, res) => {
     // const username = currentUser.username;
     // const foundUser = await User.findOne({ username });
     // const admin = foundUser.isAdmin ? true : false;
+    console.log(`${req.user} in SHOW page!!!`);
     res.render('products/show', { foundProduct });
 })
 
