@@ -89,7 +89,8 @@ app.use('/user', authRoutes);
 app.use('/products', productRoutes);
 
 app.get('/', (req, res) => {
-    res.send("Hi there!!!")
+    res.redirect('/products')
+    // res.send("Hi there!!!")
 })
 
 

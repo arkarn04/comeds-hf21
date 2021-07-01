@@ -131,7 +131,7 @@ router.delete('/:id', isLoggedIn, async(req, res) => {
     res.redirect('/user/myProducts');
 })
 
-router.get('/:id/buy', async(req, res) => {
+router.get('/:id/buy', isLoggedIn, async(req, res) => {
     const { id } = req.params;
     const foundProduct = await Product.findById(id);
     res.render('products/checkout', { foundProduct });
