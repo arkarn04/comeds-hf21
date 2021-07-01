@@ -64,5 +64,5 @@ Run the below command to start the server
 
 `npm run start`
 
-Go to: http://localhost:3000
+Go to: http://localhost:5000
 
