@@ -99,6 +99,7 @@ router.get('/:id/edit', isLoggedIn, async(req, res) => {
     res.render('products/edit', { product, categories });
 })
 
+// UPDATE a product
 router.put('/:id', isLoggedIn, upload.array('image'), async(req, res) => {
     const { id } = req.params;
     //console.log(req.body);
@@ -119,13 +120,15 @@ router.put('/:id', isLoggedIn, upload.array('image'), async(req, res) => {
     //     }
     // }
     await product.save();
-    res.redirect(`/products/${id}`);
+    //res.redirect(`/products/${id}`);
+    res.redirect('/user/myProducts');
 })
 
+// Delete a product
 router.delete('/:id', isLoggedIn, async(req, res) => {
     const { id } = req.params;
     await Product.findByIdAndDelete(id);
-    res.redirect('/products');
+    res.redirect('/user/myProducts');
 })
 
 router.get('/:id/buy', async(req, res) => {
