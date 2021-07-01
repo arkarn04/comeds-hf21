@@ -7,6 +7,7 @@
                     <h1 class="display-6" style="text-align: center;">
                         <%= foundProduct.name %>
                     </h1>
+                    <h5 style="text-align: center;">Supplied By: <em><%= foundProduct.owner.ownerName %></em></h5>
                 </div>
                 <div class="card">
                     <div class="card-body">
@@ -15,7 +16,7 @@
                             <div class="carousel-inner">
                                 <% for(let i=0;i<foundProduct.images.length;i++) { %>
 
-                                    <div class="carousel-item" <%=i===0 ? 'active' : '' %>">
+                                    <div class="carousel-item" <%= i===0 ? 'active' : '' %>">
                                         <img src="<%= foundProduct.images[i].url %>" class="d-block w-100"
                                             alt="Product Image">
                                     </div>
@@ -49,7 +50,7 @@
                                 <%= foundProduct.category %>
                             </span>
                         </p>
-                        <h3>Rs.
+                        <h3>₹
                             <%= foundProduct.price %>
                         </h3>
                         <p>Quantity Availabe-
