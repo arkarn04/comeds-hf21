@@ -66,13 +66,16 @@ router.post('/login', passport.authenticate('local', {
 //     }
 // })
 
-router.get('/mobileverifyS1', ( req, res ) => {
-    res.render('auth/mobileenter');
+router.get('/mobileverifyS1', async ( req, res ) => {
+    const curUser = await User.findById(req.user._id);
+    if(curUser.isSeller) res.redirect('/user/myProducts');
+    else res.render('auth/mobileenter');
 })
 
 router.post('/mobileverifyS1', async (req, res) => {
     console.log(req.body);
     console.log(`${req.user} in /mobileverifyS1 page!!!`);
+
     const phone = req.body.ccode + req.body.phone;
 
     const data = await client
