@@ -32,10 +32,10 @@ const userSchema = new Schema({
         }
     ],
     createdProducts: [
-    {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-    }
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Product'
+        }
     ]
 })
 

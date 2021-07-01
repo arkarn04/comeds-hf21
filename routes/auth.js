@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 const session = require('express-session')
 const User = require('../models/user');
+const Product =require('../models/product');
 
 const client = require('twilio')(process.env.VERIFY_ACCOUNTSID, process.env.VERIFY_AUTHTOKEN);
 
@@ -93,7 +94,7 @@ router.get('/mobileverifyS2', (req, res) => {
 })
 
 router.post('/mobileverifyS2', async (req, res) => {
-    console.log(req.body);
+    console.log(`${req.body} in /mobileverifyS2 page!!!`);
     try {
         const phone = req.body.ccode + req.body.phone;
         const code = req.body.otp;
@@ -106,18 +107,46 @@ router.post('/mobileverifyS2', async (req, res) => {
                 code: code
             })
         const curUser = req.user;
-        console.log(curUser);
-        // const seller = await User.findById(curUser._id);
-        // seller.isSeller=true;
-        // seller.phone = phone;
-        // await seller.save();
-        // console.log(seller);   
-        res.send('Verified!!!') 
+        console.log(`Current User: ${curUser}`);
+        const seller = await User.findById(curUser._id);
+        seller.isSeller=true;
+        seller.phone = phone;
+        await seller.save();
+        console.log(`Seller: ${seller}`);   
+        //res.send('Verified!!!');
+        res.redirect('/user/myProducts');
     }
     catch(err) {
         console.log(err);
     }
 })
+
+router.get('/personaldetails', async (req, res) => {
+    const curUser = await User.findById(req.user);
+    res.render('auth/accountdetails', { curUser }); 
+})
+
+router.get('/purchasehistory', async (req, res) => {
+    const curUser = req.user;
+    const buyer = await User.findById(curUser._id).populate("boughtProducts");
+    //console.log(`Buyer Info: ${buyer}`);
+    res.render('products/purchasedProducts', { buyer });
+})
+
+router.get('/myProducts', async (req, res) => {
+    const curUser = req.user;
+    console.log(`Before populating: ${curUser}`);
+    const seller = await User.findById(curUser._id).populate("createdProducts");
+        
+    //const addedProducts = seller.createdProducts.map(prod => prod);
+    console.log(`After populating: ${seller}`);
+    console.log(`RESULT: ${seller.createdProducts}`);
+    //console.log(`Products added by current seller: ${addedProducts? addedProducts : "NIL"}`);
+    res.render('products/createdProducts', { seller });
+        
+    
+})
+
 
 router.get('/logout', (req, res) => {
     req.logout();

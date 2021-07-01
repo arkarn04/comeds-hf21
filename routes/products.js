@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const Product = require('../models/product');
+const User = require('../models/user')
 const twilio = require('twilio');
 const multer = require('multer');
 const { storage, cloudinary } = require('../cloudinary/index');
@@ -60,14 +61,31 @@ router.post('/', isLoggedIn, upload.array('image'), async(req, res) => {
     //res.send('Done');
     // console.log(newProduct);
     console.log(req.user);
+    // var author = {
+    //     id: req.user._id,
+    //     username: req.user.username
+    // }
+    
+    const curUser = req.user;
+    newProduct.owner = {
+        id: curUser._id,
+        ownerName: curUser.username
+    };
     await newProduct.save();
-    res.redirect('/products');
+    console.log(`After creating a new product, newProduct: ${newProduct}`);
+
+    const curSeller = await User.findById(curUser._id);
+    curSeller.createdProducts.push(newProduct);
+    await curSeller.save();
+    console.log(`After creating a new product, seller info: ${curSeller}`);
+
+    res.redirect('/user/myProducts');
 })
 
 // GET a particular product
 router.get('/:id', async(req, res) => {
     const { id } = req.params;
-    const foundProduct = await Product.findById(id);
+    const foundProduct = await Product.findById(id).populate("owner");
     // const username = currentUser.username;
     // const foundUser = await User.findOne({ username });
     // const admin = foundUser.isAdmin ? true : false;
@@ -102,7 +120,6 @@ router.put('/:id', isLoggedIn, upload.array('image'), async(req, res) => {
     // }
     await product.save();
     res.redirect(`/products/${id}`);
-
 })
 
 router.delete('/:id', isLoggedIn, async(req, res) => {
@@ -114,13 +131,22 @@ router.delete('/:id', isLoggedIn, async(req, res) => {
 router.get('/:id/buy', async(req, res) => {
     const { id } = req.params;
     const foundProduct = await Product.findById(id);
-    res.render('products/checkout', { foundProduct })
+    res.render('products/checkout', { foundProduct });
 })
 
 router.post('/:id/buy', async(req, res) => {
+    console.log(`${req.user} in purchase PAGE!!`);
     const { username, address } = req.body;
     const { id } = req.params;
+
+    const curUser = req.user;
     const foundProduct = await Product.findById(id);
+    const buyer = await User.findById(curUser._id);
+    buyer.boughtProducts.push(foundProduct);
+    await buyer.save();
+    
+    console.log(`After purchase, buyer info: ${req.user}`);
+
     if (foundProduct.qtyAvl > 1) {
         foundProduct.qtyAvl--;
         await foundProduct.save();
@@ -133,12 +159,24 @@ router.post('/:id/buy', async(req, res) => {
             })
             .then(message => {
                 console.log(message.sid);
+
                 res.redirect('/products');
             })
             .catch(err => console.log("UNSUCCESSFUL PURCHASE", err));
     } else {
         foundProduct.qtyAvl--;
         await foundProduct.save();
+
+        client.messages
+            .create({
+                body: `Dear seller, you have an order request from ${username} for ${foundProduct.name} at address : ${address}`,
+                from: '+18173857837',
+                to: '+919304257915'
+            })
+            .then(message => {
+                console.log(message.sid);
+            });    
+
         client.messages
             .create({
                 body: `Dear seller, the amount of ${foundProduct.name} available for selling on CoMeds.com has reduced to zero, Kindly take necessary actions.`,

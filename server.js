@@ -33,13 +33,17 @@ mongoose.connect(process.env.DATABASE_URI, { useNewUrlParser: true, useUnifiedTo
 const accountSid = process.env.TWILIO_ACCOUNTSID;
 const authToken = process.env.TWILIO_AUTHTOKEN;
 const client = require('twilio')(accountSid, authToken);
-//parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }))
-app.use(methodOverride('_method'));
-app.use(flash());
+
+
 app.use('/public', express.static(path.join(__dirname, 'public')))
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+//parse application/x-www-form-urlencoded
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }))
+app.use(methodOverride('_method'));
+app.use(flash());
 
 
 // const sessionConfig = ({
