@@ -29,7 +29,7 @@ router.get('/', async(req, res) => {
 
 router.get('/search/:cityOfPresence/:category', async(req, res) => {
     const { cityOfPresence, category } = req.params;
-    const foundProducts = await Product.find({ cityOfPresence: cityOfPresence, category });
+    const foundProducts = await (await Product.find({ cityOfPresence: cityOfPresence, category })).filter(prod => prod.qtyAvl>0);
     //console.log(foundProducts)
     console.log(`${req.user} in search results page!!!`);
     res.render('products/searchResult', { foundProducts })
