@@ -6,7 +6,7 @@ const twilio = require('twilio');
 const multer = require('multer');
 const { storage, cloudinary } = require('../cloudinary/index');
 const upload = multer({ storage });
-const { isLoggedIn } = require('../middleware')
+const { isLoggedIn, checkproductOwnership, isbuyerNotSeller, isuserAlsoSeller } = require('../middleware/index')
 
 const accountSid = process.env.TWILIO_ACCOUNTSID;
 const authToken = process.env.TWILIO_AUTHTOKEN;
@@ -48,13 +48,13 @@ router.post('/search', (req, res) => {
 
 
 // Get a form to add new product
-router.get('/new', isLoggedIn, (req, res) => {
+router.get('/new', isuserAlsoSeller, (req, res) => {
     res.render('products/new', { categories });
     //res.send(`form for new product`)
 })
 
 // CREATE new product
-router.post('/', isLoggedIn, upload.array('image'), async(req, res) => {
+router.post('/', isuserAlsoSeller, upload.array('image'), async(req, res) => {
     const newProduct = new Product(req.body);
     newProduct.images = req.files.map(f => ({ url: f.path, filename: f.filename }));
     //console.log(req.body, req.files)
@@ -93,14 +93,15 @@ router.get('/:id', async(req, res) => {
     res.render('products/show', { foundProduct });
 })
 
-router.get('/:id/edit', isLoggedIn, async(req, res) => {
+// Get form to update a product
+router.get('/:id/edit', checkproductOwnership, async(req, res) => {
     const { id } = req.params;
     const product = await Product.findById(id);
     res.render('products/edit', { product, categories });
 })
 
 // UPDATE a product
-router.put('/:id', isLoggedIn, upload.array('image'), async(req, res) => {
+router.put('/:id', checkproductOwnership, upload.array('image'), async(req, res) => {
     const { id } = req.params;
     //console.log(req.body);
     const product = await Product.findByIdAndUpdate(id, req.body, { runValidators: true, new: true });
@@ -125,19 +126,21 @@ router.put('/:id', isLoggedIn, upload.array('image'), async(req, res) => {
 })
 
 // Delete a product
-router.delete('/:id', isLoggedIn, async(req, res) => {
+router.delete('/:id', checkproductOwnership, async(req, res) => {
     const { id } = req.params;
     await Product.findByIdAndDelete(id);
     res.redirect('/user/myProducts');
 })
 
-router.get('/:id/buy', isLoggedIn, async(req, res) => {
+// Buy a product
+router.get('/:id/buy', isbuyerNotSeller, async(req, res) => {
     const { id } = req.params;
     const foundProduct = await Product.findById(id);
     res.render('products/checkout', { foundProduct });
 })
 
-router.post('/:id/buy', async(req, res) => {
+// Buy a product
+router.post('/:id/buy', isbuyerNotSeller, async(req, res) => {
     console.log(`${req.user} in purchase PAGE!!`);
     const { username, address } = req.body;
     const { id } = req.params;
