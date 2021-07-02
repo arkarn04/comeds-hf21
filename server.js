@@ -34,6 +34,9 @@ const accountSid = process.env.TWILIO_ACCOUNTSID;
 const authToken = process.env.TWILIO_AUTHTOKEN;
 const client = require('twilio')(accountSid, authToken);
 
+app.use('/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')))
+app.use('/js', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/js')))
+app.use('/js', express.static(path.join(__dirname, 'node_modules/jquery/dist')))
 
 app.use('/public', express.static(path.join(__dirname, 'public')))
 app.set('view engine', 'ejs');
