@@ -5,20 +5,20 @@ const passport = require('passport');
 const session = require('express-session')
 const User = require('../models/user');
 const Product =require('../models/product');
-const { isLoggedIn, isbuyerNotSeller, isuserAlsoSeller, checkproductOwnership } = require('../middleware/index');
+const { isLoggedIn } = require('../middleware/index');
 
 const client = require('twilio')(process.env.VERIFY_ACCOUNTSID, process.env.VERIFY_AUTHTOKEN);
 
-// const isUserLoggedin = () => {
-//     if (!req.session.user_id) {
-//         return res.redirect('/user/login')
-//     }
-//     next();
-// }
+// GET Routes
 
 // GET signup form
 router.get('/register', (req, res) => {
     res.render('auth/register');
+})
+
+// GET login form
+router.get('/login', (req, res) => {
+    res.render('auth/login');
 })
 
 // Register route
@@ -30,46 +30,8 @@ router.post('/register', async(req, res, next) => {
             if (err) return next(err)
             res.redirect('/products');
         })
-        // const hash = await bcrypt.hash(password, 12);
-        // const user = new User({
-        //     name,
-        //     email,
-        //     dateOfBirth,
-        //     password: hash
-        // })
-        // await user.save();
-        // req.session.user_id = user._id;
 
 })
-
-// GET login form
-router.get('/login', (req, res) => {
-    res.render('auth/login');
-})
-
-// Login
-router.post('/login', passport.authenticate('local', {
-    // successRedirect: '/products',
-    faliureRedirect: '/user/login'
-}), (req, res) => {
-    // req.flash('success', 'Welcome!!!')
-    const redirectUrl = req.session.returnTo || '/products'
-    delete req.session.returnTo;
-    res.redirect(redirectUrl);
-
-})
-
-// router.post('/login', async(req, res) => {
-//     const { email, password } = req.body;
-//     const foundUser = await User.findOne({ email });
-//     const isValidUser = await bcrypt.compare(password, foundUser.password);
-//     if (isValidUser) {
-//         req.session.user_id = foundUser._id;
-//         res.redirect('/products')
-//     } else {
-//         res.redirect('/user/login')
-//     }
-// })
 
 // GET form to verify mobile number
 router.get('/mobileverifyS1',isLoggedIn, async ( req, res ) => {
@@ -78,59 +40,9 @@ router.get('/mobileverifyS1',isLoggedIn, async ( req, res ) => {
     else res.render('auth/mobileenter');
 })
 
-// Mobile verification step 1
-router.post('/mobileverifyS1', isLoggedIn, async (req, res) => {
-    console.log(req.body);
-    console.log(`${req.user} in /mobileverifyS1 page!!!`);
-
-    const phone = req.body.ccode + req.body.phone;
-
-    const data = await client
-        .verify
-        .services(process.env.VERIFY_SERVICEID)
-        .verifications
-        .create({
-            to: phone,
-            channel: 'sms'
-        })
-     
-    res.render('auth/codeenter', { phone })
-    //res.redirect('/user/mobileverifyS2');    
-    //res.send(`Form submitted`);
-})
-
 // GET form to enter code
 router.get('/mobileverifyS2', isLoggedIn, (req, res) => {
     res.render('auth/codeenter');
-})
-
-// Mobile verification STEP 2
-router.post('/mobileverifyS2',isLoggedIn, async (req, res) => {
-    console.log(`${req.body} in /mobileverifyS2 page!!!`);
-    try {
-        const phone = req.body.ccode + req.body.phone;
-        const code = req.body.otp;
-        const data = await client
-            .verify
-            .services(process.env.VERIFY_SERVICEID)
-            .verificationChecks
-            .create({
-                to: phone,
-                code: code
-            })
-        const curUser = req.user;
-        console.log(`Current User: ${curUser}`);
-        const seller = await User.findById(curUser._id);
-        seller.isSeller=true;
-        seller.phone = phone;
-        await seller.save();
-        console.log(`Seller: ${seller}`);   
-        //res.send('Verified!!!');
-        res.redirect('/user/myProducts');
-    }
-    catch(err) {
-        console.log(err);
-    }
 })
 
 // GET personal account details
@@ -143,25 +55,15 @@ router.get('/personaldetails',isLoggedIn, async (req, res) => {
 router.get('/purchasehistory', isLoggedIn, async (req, res) => {
     const curUser = req.user;
     const buyer = await User.findById(curUser._id).populate("boughtProducts");
-    //console.log(`Buyer Info: ${buyer}`);
     res.render('products/purchasedProducts', { buyer });
 })
 
 // GET list of products added by user(IFF SELLER)
 router.get('/myProducts', isLoggedIn, async (req, res) => {
     const curUser = req.user;
-    console.log(`Before populating: ${curUser}`);
     const seller = await User.findById(curUser._id).populate("createdProducts");
     if(!seller.isSeller) res.redirect('/user/mobileverifyS1');
     else res.render('products/createdProducts', { seller });
-        
-    //const addedProducts = seller.createdProducts.map(prod => prod);
-    // console.log(`After populating: ${seller}`);
-    // console.log(`RESULT: ${seller.createdProducts}`);
-    //console.log(`Products added by current seller: ${addedProducts? addedProducts : "NIL"}`);
-    
-        
-    
 })
 
 // logout route
@@ -170,9 +72,58 @@ router.get('/logout', (req, res) => {
     res.redirect('/user/login')
 })
 
-// router.post('/logout', (req, res) => {
-//     req.session.user_id = null;
-//     res.redirect('/user/login')
-// })
+// POST Routes
+
+// Login
+router.post('/login', passport.authenticate('local', {
+    faliureRedirect: '/user/login'
+}), (req, res) => {
+    // req.flash('success', 'Welcome!!!')
+    const redirectUrl = req.session.returnTo || '/products'
+    delete req.session.returnTo;
+    res.redirect(redirectUrl);
+
+})
+
+// Mobile verification step 1
+router.post('/mobileverifyS1', isLoggedIn, async (req, res) => {
+    const phone = req.body.ccode + req.body.phone;
+
+    const data = await client
+        .verify
+        .services(process.env.VERIFY_SERVICEID)
+        .verifications
+        .create({
+            to: phone,
+            channel: 'sms'
+        })
+     
+    res.render('auth/codeenter', { phone });
+})
+
+// Mobile verification STEP 2
+router.post('/mobileverifyS2',isLoggedIn, async (req, res) => {
+    try {
+        const phone = req.body.ccode + req.body.phone;
+        const code = req.body.otp;
+        const data = await client
+            .verify
+            .services(process.env.VERIFY_SERVICEID)
+            .verificationChecks
+            .create({
+                to: phone,
+                code: code
+            })
+        const curUser = req.user;
+        const seller = await User.findById(curUser._id);
+        seller.isSeller=true;
+        seller.phone = phone;
+        await seller.save();
+        res.redirect('/user/myProducts');
+    }
+    catch(err) {
+        console.log(err);
+    }
+})
 
 module.exports = router
