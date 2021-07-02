@@ -136,7 +136,9 @@ router.delete('/:id', checkproductOwnership, async(req, res) => {
 router.get('/:id/buy', isbuyerNotSeller, async(req, res) => {
     const { id } = req.params;
     const foundProduct = await Product.findById(id);
-    res.render('products/checkout', { foundProduct });
+    const curUser = await User.findById(req.user._id);
+    //console.log(curUser.username);
+    res.render('products/checkout', { foundProduct, name: curUser.username });
 })
 
 // Buy a product
