@@ -5,20 +5,23 @@ const passport = require('passport');
 const session = require('express-session')
 const User = require('../models/user');
 const Product =require('../models/product');
+const { isLoggedIn, isbuyerNotSeller, isuserAlsoSeller, checkproductOwnership } = require('../middleware/index');
 
 const client = require('twilio')(process.env.VERIFY_ACCOUNTSID, process.env.VERIFY_AUTHTOKEN);
 
-const isUserLoggedin = () => {
-    if (!req.session.user_id) {
-        return res.redirect('/user/login')
-    }
-    next();
-}
+// const isUserLoggedin = () => {
+//     if (!req.session.user_id) {
+//         return res.redirect('/user/login')
+//     }
+//     next();
+// }
 
+// GET signup form
 router.get('/register', (req, res) => {
     res.render('auth/register');
 })
 
+// Register route
 router.post('/register', async(req, res, next) => {
     const { username, email, dateOfBirth, password } = req.body;
     const user = new User({ username, email, dateOfBirth });
@@ -39,10 +42,12 @@ router.post('/register', async(req, res, next) => {
 
 })
 
+// GET login form
 router.get('/login', (req, res) => {
     res.render('auth/login');
 })
 
+// Login
 router.post('/login', passport.authenticate('local', {
     // successRedirect: '/products',
     faliureRedirect: '/user/login'
@@ -66,13 +71,15 @@ router.post('/login', passport.authenticate('local', {
 //     }
 // })
 
-router.get('/mobileverifyS1', async ( req, res ) => {
+// GET form to verify mobile number
+router.get('/mobileverifyS1',isLoggedIn, async ( req, res ) => {
     const curUser = await User.findById(req.user._id);
     if(curUser.isSeller) res.redirect('/user/myProducts');
     else res.render('auth/mobileenter');
 })
 
-router.post('/mobileverifyS1', async (req, res) => {
+// Mobile verification step 1
+router.post('/mobileverifyS1', isLoggedIn, async (req, res) => {
     console.log(req.body);
     console.log(`${req.user} in /mobileverifyS1 page!!!`);
 
@@ -92,11 +99,13 @@ router.post('/mobileverifyS1', async (req, res) => {
     //res.send(`Form submitted`);
 })
 
-router.get('/mobileverifyS2', (req, res) => {
+// GET form to enter code
+router.get('/mobileverifyS2', isLoggedIn, (req, res) => {
     res.render('auth/codeenter');
 })
 
-router.post('/mobileverifyS2', async (req, res) => {
+// Mobile verification STEP 2
+router.post('/mobileverifyS2',isLoggedIn, async (req, res) => {
     console.log(`${req.body} in /mobileverifyS2 page!!!`);
     try {
         const phone = req.body.ccode + req.body.phone;
@@ -124,19 +133,22 @@ router.post('/mobileverifyS2', async (req, res) => {
     }
 })
 
-router.get('/personaldetails', async (req, res) => {
+// GET personal account details
+router.get('/personaldetails',isLoggedIn, async (req, res) => {
     const curUser = await User.findById(req.user);
     res.render('auth/accountdetails', { curUser }); 
 })
 
-router.get('/purchasehistory', async (req, res) => {
+// GET purchase history
+router.get('/purchasehistory', isLoggedIn, async (req, res) => {
     const curUser = req.user;
     const buyer = await User.findById(curUser._id).populate("boughtProducts");
     //console.log(`Buyer Info: ${buyer}`);
     res.render('products/purchasedProducts', { buyer });
 })
 
-router.get('/myProducts', async (req, res) => {
+// GET list of products added by user(IFF SELLER)
+router.get('/myProducts', isLoggedIn, async (req, res) => {
     const curUser = req.user;
     console.log(`Before populating: ${curUser}`);
     const seller = await User.findById(curUser._id).populate("createdProducts");
@@ -152,7 +164,7 @@ router.get('/myProducts', async (req, res) => {
     
 })
 
-
+// logout route
 router.get('/logout', (req, res) => {
     req.logout();
     res.redirect('/user/login')
