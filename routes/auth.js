@@ -140,12 +140,14 @@ router.get('/myProducts', async (req, res) => {
     const curUser = req.user;
     console.log(`Before populating: ${curUser}`);
     const seller = await User.findById(curUser._id).populate("createdProducts");
+    if(!seller.isSeller) res.redirect('/user/mobileverifyS1');
+    else res.render('products/createdProducts', { seller });
         
     //const addedProducts = seller.createdProducts.map(prod => prod);
-    console.log(`After populating: ${seller}`);
-    console.log(`RESULT: ${seller.createdProducts}`);
+    // console.log(`After populating: ${seller}`);
+    // console.log(`RESULT: ${seller.createdProducts}`);
     //console.log(`Products added by current seller: ${addedProducts? addedProducts : "NIL"}`);
-    res.render('products/createdProducts', { seller });
+    
         
     
 })
