@@ -16,13 +16,13 @@ const categories = ['medicine', 'oxygen-cylinder', 'equipments'];
 
 //GET all products
 router.get('/', async(req, res) => {
-    const foundProducts = await (await Product.find({})).filter(prod => prod.qtyAvl>0);
+    const foundProducts = await Product.find({ qtyAvl: { $gt: 0 } });
     res.render('products/index', { foundProducts })
 })
 
 router.get('/search/:cityOfPresence/:category', async(req, res) => {
     const { cityOfPresence, category } = req.params;
-    const foundProducts = await (await Product.find({ cityOfPresence: cityOfPresence, category })).filter(prod => prod.qtyAvl>0);
+    const foundProducts = await Product.find({ cityOfPresence: cityOfPresence, category, qtyAvl: { $gt: 0 } });
     res.render('products/searchResult', { foundProducts })
 })
 
@@ -101,7 +101,6 @@ router.get('/:id/buy', isbuyerNotSeller, async(req, res) => {
 
 // Buy a product
 router.post('/:id/buy', isbuyerNotSeller, async(req, res) => {
-    console.log(`${req.user} in purchase PAGE!!`);
     const { username, address } = req.body;
     const { id } = req.params;
 
@@ -111,8 +110,6 @@ router.post('/:id/buy', isbuyerNotSeller, async(req, res) => {
     buyer.boughtProducts.push(foundProduct);
     await buyer.save();
     
-    console.log(`After purchase, buyer info: ${req.user}`);
-
     if (foundProduct.qtyAvl > 1) {
         foundProduct.qtyAvl--;
         await foundProduct.save();
@@ -124,8 +121,6 @@ router.post('/:id/buy', isbuyerNotSeller, async(req, res) => {
                 to: '+919304257915'
             })
             .then(message => {
-                console.log(message.sid);
-
                 res.redirect('/products');
             })
             .catch(err => console.log("UNSUCCESSFUL PURCHASE", err));
@@ -140,7 +135,6 @@ router.post('/:id/buy', isbuyerNotSeller, async(req, res) => {
                 to: '+919304257915'
             })
             .then(message => {
-                console.log(message.sid);
             });    
 
         client.messages
@@ -150,11 +144,10 @@ router.post('/:id/buy', isbuyerNotSeller, async(req, res) => {
                 to: '+919304257915'
             })
             .then(message => {
-                console.log(message.sid);
                 res.redirect('/products');
             })
             .catch(err => {
-                console.log("PRODUCT NOT AVAILABLE",err);
+                console.log(err);
             })
         
     }
