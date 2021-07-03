@@ -14,7 +14,11 @@ const flash          = require('connect-flash');
 const LocalStrategy  = require('passport-local');
 const twilio         = require('twilio');
 const multer         = require('multer');
-const User           = require('./models/user')
+const compression    = require('compression');
+const helmet         = require('helmet');
+const mongoSanitize  = require('express-mongo-sanitize');
+const User           = require('./models/user');
+const Product        = require('./models/product'); 
 const app            = express();
 
 const productRoutes = require('./routes/products')
@@ -44,15 +48,20 @@ app.set('views', path.join(__dirname, 'views'));
 
 //parse application/x-www-form-urlencoded
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }))
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(compression());
+app.use(helmet({contentSecurityPolicy: false}));
+app.use(mongoSanitize());
 app.use(methodOverride('_method'));
 app.use(flash());
 
 app.use(require('express-session')({
+    name: "session",
     secret: "thiscouldabettersecret",
     resave: true,
     saveUninitialized: false,
     cookie: {
+        //secure: true,
         httpOnly: true,
         expires: Date.now() + 1000 * 60 * 60 * 24 * 7,
         maxAge: 1000 * 60 * 60 * 24 * 7
@@ -72,12 +81,13 @@ app.use((req, res, next) => {
     next();
 })
 
+app.get('/', async (req, res) => {
+    const foundProducts = await Product.find({ qtyAvl: { $gt: 0 } });
+    res.render('products/index', { foundProducts })
+})
+
 app.use('/user', authRoutes);
 app.use('/products', productRoutes);
-
-app.get('/', (req, res) => {
-    res.redirect('/products');
-})
 
 app.listen(PORT, () => {
     console.log(`Server running on PORT ${PORT}`);
